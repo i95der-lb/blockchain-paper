@@ -1,0 +1,29 @@
+BootStrap: debootstrap
+OSVersion: bionic
+MirrorURL: http://us.archive.ubuntu.com/ubuntu/
+
+%files
+	installers/go-ethereum-1.9.1 /home
+	installers/go1.13.5.linux-amd64.tar.gz /
+
+%post
+	echo "Hello from inside the container"
+    sed -i 's/$/ universe/' /etc/apt/sources.list
+    apt-get update
+    apt-get -y install vim software-properties-common net-tools curl jq psmisc build-essential python-pydot python-pydot-ng graphviz
+	curl -sL https://deb.nodesource.com/setup_10.x | bash -
+	apt-get install -y nodejs
+    apt-get clean
+	cd /
+	tar -C /usr/local -xzf go1.13.5.linux-amd64.tar.gz
+	export PATH=$PATH:/usr/local/go/bin
+	cd /home/go-ethereum-1.9.1/
+	make all
+	cd build
+	cp -a bin/. /usr/bin/
+
+	
+
+%runscript
+	cd $1/simulation1-eth/eth-v3
+	./automatic.sh

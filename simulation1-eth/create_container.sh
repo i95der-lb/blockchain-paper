@@ -1,0 +1,1 @@
+sudo singularity build eth.sif geth.def
